@@ -13,3 +13,7 @@ func NewType(name string, parents... *Type) *Type {
     Parents: parents,
   }
 }
+
+func (t *Type) String() string {
+  return t.Name
+}

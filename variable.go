@@ -1,5 +1,9 @@
 package main
 
+import (
+  "fmt"
+)
+
 type Variable struct {
   Name string
   Type *Type 
@@ -11,4 +15,8 @@ func NewVariable(name string, t *Type) *Variable {
     Name: name,
     Type: t,
   }
+}
+
+func (v *Variable) String() string {
+  return fmt.Sprintf("(%v, %v)", v.Name, v.Type)
 }
