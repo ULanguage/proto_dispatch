@@ -13,13 +13,6 @@ type Function struct {
 
 var Functions = []*Function{}
 
-func NewFunction(name string, params []*Type) *Function {
-  return &Function{
-    Name: name,
-    Params: params, // TODO: Copy?
-  }
-}
-
 func (fun *Function) Call(args... *Variable) {
   fmt.Printf("Called: %v(%v) with %v\n", fun.Name, fun.Params, args)
 }
@@ -29,9 +22,29 @@ func findFunction(name string, params []*Type) *Function {
 }
 
 func DefineFunction(name string, params... *Type) bool {
-  return false
+  if findFunction(name, params) != nil {
+    return false
+  }
+
+  fun := &Function{
+    Name: name,
+    Params: params,
+  }
+
+  Functions = append(Functions, fun)
+  return true
 }
 
 func CallFunction(name string, args... *Variable) {
-  // TODO: Return function's return
+  types := make([]*Type, len(args))
+  for _, arg := range args {
+    types = append(types, arg.Type)
+  }
+
+  fun := findFunction(name, types)
+  if fun == nil {
+    panic("No such function")
+  }
+
+  fun.Call(args...)
 }
