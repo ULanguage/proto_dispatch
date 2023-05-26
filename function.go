@@ -17,6 +17,17 @@ func (fun *Function) Call(args... *Variable) {
   fmt.Printf("Called: %v(%v) with %v\n", fun.Name, fun.Params, args)
 }
 
+func (fun *Function) DistanceTo(params []*Type) int {
+  distance := 0
+
+  for i := range fun.Params {
+    distance += params[i].DistanceTo(fun.Params[i])
+  }
+
+  //fmt.Println("[DistanceTo]", params, fun.Params, distance)
+  return distance
+}
+
 func filterByName(options []*Function, name string) []*Function {
   //fmt.Println("[filterByName]", name)
   newOptions := make([]*Function, 0, len(options))
@@ -48,7 +59,7 @@ func filterByArg(options []*Function, p *Type, idx int) []*Function {
   newOptions := make([]*Function, 0, len(options))
 
   for _, fun := range options {
-    if p.isDescendantOf(fun.Params[idx]) {
+    if p.IsDescendantOf(fun.Params[idx]) {
       newOptions = append(newOptions, fun)
     }
   }
@@ -56,12 +67,19 @@ func filterByArg(options []*Function, p *Type, idx int) []*Function {
   return newOptions
 }
 
-func deepestOption(options []*Function) *Function {
+func closestOption(options []*Function, params []*Type) *Function {
   if len(options) == 0 {
     return nil
   }
 
-  return options[0] // TODO: Actually deepest
+  fun := options[0]
+  for _, f := range options {
+    if f.DistanceTo(params) < fun.DistanceTo(params) {
+      fun = f
+    }
+  }
+
+  return fun
 }
 
 func findFunction(name string, params []*Type) *Function {
@@ -79,7 +97,7 @@ func findFunction(name string, params []*Type) *Function {
     //fmt.Println(options)
   }
 
-  return deepestOption(options)
+  return closestOption(options, params)
 }
 
 func findFunctionStrict(name string, params []*Type) *Function {
