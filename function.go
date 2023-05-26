@@ -48,8 +48,9 @@ func filterByArg(options []*Function, p *Type, idx int) []*Function {
   newOptions := make([]*Function, 0, len(options))
 
   for _, fun := range options {
-    // TODO: Check it satisfies this param
-    newOptions = append(newOptions, fun)
+    if p.isDescendantOf(fun.Params[idx]) {
+      newOptions = append(newOptions, fun)
+    }
   }
 
   return newOptions
