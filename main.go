@@ -11,6 +11,10 @@ func main() {
     panic("Couldn't define print for generic")
   }
 
+  if !DefineFunction("print", Number) {
+    panic("Couldn't define print for number")
+  }
+
   gen := NewVariable("gen", Generic)
   num := NewVariable("num", Number)
 

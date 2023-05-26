@@ -82,8 +82,25 @@ func findFunction(name string, params []*Type) *Function {
   return deepestOption(options)
 }
 
+func findFunctionStrict(name string, params []*Type) *Function {
+  for _, fun := range Functions {
+    if fun.Name == name && len(fun.Params) == len(params) {
+      allEqual := true
+      for i := range params {
+        allEqual = allEqual && (fun.Params[i] == params[i])
+      }
+
+      if allEqual {
+        return fun
+      }
+    }
+  }
+
+  return nil
+}
+
 func DefineFunction(name string, params... *Type) bool {
-  if findFunction(name, params) != nil {
+  if findFunctionStrict(name, params) != nil {
     return false
   }
 
